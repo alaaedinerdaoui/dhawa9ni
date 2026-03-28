@@ -1,0 +1,52 @@
+{
+  "placeholderImages": [
+    {
+      "id": "hero-kaak-warka",
+      "description": "تشكيلة فاخرة من الحلويات التونسية تقليدية مع لمسة ذهبية",
+      "imageUrl": "https://i.pinimg.com/736x/72/da/cd/72dacdbfdeae7f39e78b376fa3e7f2a9.jpg",
+      "imageHint": "Tunisian sweets"
+    },
+    {
+      "id": "baklawa",
+      "description": "Baklawa tunisienne au miel et aux fruits secs",
+      "imageUrl": "https://i.pinimg.com/736x/04/78/05/047805294bb034fdc826bf93fe02ad04.jpg",
+      "imageHint": "baklava pastry"
+    },
+    {
+      "id": "makroudh",
+      "description": "Makroudh traditionnel aux dattes",
+      "imageUrl": "https://i.pinimg.com/736x/6b/1a/17/6b1a1711e677e44a7d8cf7406078aed9.jpg",
+      "imageHint": "date pastry"
+    },
+    {
+      "id": "kaak-warka-item",
+      "description": "Kaak Warka délicat fourré aux amandes",
+      "imageUrl": "https://i.pinimg.com/736x/66/83/2a/66832ae6f5349e2f9a8de94cbfeaf27b.jpg",
+      "imageHint": "white pastry"
+    },
+    {
+      "id": "ghraiba",
+      "description": "Ghraiba de pois chiches fondante",
+      "imageUrl": "https://i.pinimg.com/736x/f3/e1/d2/f3e1d210822b06b51a9f16b153612f9a.jpg",
+      "imageHint": "cookie pastry"
+    },
+    {
+      "id": "mlabes",
+      "description": "Mlabes traditionnel de Sfax aux amandes",
+      "imageUrl": "https://i.pinimg.com/736x/00/6d/62/006d62cca318cfb8ae45b6d8f6ca8342.jpg",
+      "imageHint": "almond sweets"
+    },
+    {
+      "id": "griwech",
+      "description": "ڨراوش مقرمش ومعسل بالجلجلان",
+      "imageUrl": "https://i.pinimg.com/736x/95/3e/58/953e58dcfea2fe361fcc246e87d40e7d.jpg",
+      "imageHint": "honeyed pastry"
+    },
+    {
+      "id": "zouza",
+      "description": "زوزة تونسية تقليدية محشوة بالكراميل ومزينة بالفستق على الأطراف",
+      "imageUrl": "https://i.pinimg.com/736x/58/62/1a/58621ad35d8355cec8c7daaa68aaebe1.jpg",
+      "imageHint": "walnut pastries"
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Background: Soft warm beige #F9F5EE */
+    --background: 39 38% 96%;
+    --foreground: 39 10% 10%;
+    
+    /* Card: White or very near beige */
+    --card: 0 0% 100%;
+    --card-foreground: 39 10% 10%;
+    
+    --popover: 0 0% 100%;
+    --popover-foreground: 39 10% 10%;
+    
+    /* Primary: Rich ochre gold #8C5E0A */
+    --primary: 39 85% 29%;
+    --primary-foreground: 39 20% 98%;
+    
+    /* Secondary: Warm muted beige */
+    --secondary: 39 30% 90%;
+    --secondary-foreground: 39 85% 20%;
+    
+    --muted: 39 20% 92%;
+    --muted-foreground: 39 10% 40%;
+    
+    /* Accent: Vibrant burnt orange #DB662B */
+    --accent: 20 71% 51%;
+    --accent-foreground: 0 0% 100%;
+    
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    
+    --border: 39 20% 85%;
+    --input: 39 20% 85%;
+    --ring: 39 85% 29%;
+    
+    --radius: 0.75rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-headline;
+  }
+  .font-arabic {
+    font-family: 'Tajawal', sans-serif;
+  }
+}

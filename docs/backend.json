@@ -1,0 +1,197 @@
+{
+  "entities": {
+    "Product": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Product",
+      "type": "object",
+      "description": "Represents a single pastry item available for sale in the Haya Tunis Pastries catalog.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Product entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the pastry."
+        },
+        "description": {
+          "type": "string",
+          "description": "A short, appetizing description of the pastry."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "The URL of the image displaying the pastry.",
+          "format": "uri"
+        },
+        "price": {
+          "type": "number",
+          "description": "The current selling price of the pastry."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "imageUrl",
+        "price"
+      ]
+    },
+    "Order": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Order",
+      "type": "object",
+      "description": "Represents a customer's validated purchase of pastries from Haya Tunis Pastries.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Order entity."
+        },
+        "orderDate": {
+          "type": "string",
+          "description": "The date and time when the order was placed.",
+          "format": "date-time"
+        },
+        "totalAmount": {
+          "type": "number",
+          "description": "The total monetary amount of the order, including all items."
+        },
+        "status": {
+          "type": "string",
+          "description": "The current status of the order (e.g., 'pending', 'confirmed', 'shipped', 'delivered', 'cancelled')."
+        },
+        "customerName": {
+          "type": "string",
+          "description": "The name of the customer who placed the order."
+        },
+        "customerEmail": {
+          "type": "string",
+          "description": "The email address of the customer.",
+          "format": "email"
+        },
+        "customerPhone": {
+          "type": "string",
+          "description": "The phone number of the customer."
+        },
+        "shippingAddress": {
+          "type": "string",
+          "description": "The shipping address for the order (e.g., '123 Main St, Anytown, 12345')."
+        },
+        "orderItemIds": {
+          "type": "array",
+          "description": "References to OrderItem entities associated with this order. (Relationship: Order 1:N OrderItem)",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "orderDate",
+        "totalAmount",
+        "status",
+        "customerName",
+        "customerEmail",
+        "orderItemIds"
+      ]
+    },
+    "OrderItem": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "OrderItem",
+      "type": "object",
+      "description": "Represents a specific product and its quantity within a customer's order.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the OrderItem entity."
+        },
+        "orderId": {
+          "type": "string",
+          "description": "Reference to the Order this item belongs to. (Relationship: Order 1:N OrderItem)"
+        },
+        "productId": {
+          "type": "string",
+          "description": "Reference to the Product being ordered. (Relationship: Product 1:N OrderItem)"
+        },
+        "quantity": {
+          "type": "number",
+          "description": "The quantity of the product ordered."
+        },
+        "unitPrice": {
+          "type": "number",
+          "description": "The price of the product at the time it was added to the order. This can differ from the current product price."
+        }
+      },
+      "required": [
+        "id",
+        "orderId",
+        "productId",
+        "quantity",
+        "unitPrice"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/products",
+        "definition": {
+          "entityName": "Product",
+          "schema": {
+            "$ref": "#/backend/entities/Product"
+          },
+          "description": "Collection storing all available pastry products. Publicly readable by all users. Write access is restricted to administrators only."
+        }
+      },
+      {
+        "path": "/orders",
+        "definition": {
+          "entityName": "Order",
+          "schema": {
+            "$ref": "#/backend/entities/Order"
+          },
+          "description": "Collection storing all customer orders. Each document includes a denormalized 'customerId' field for authorization independence, linking it to the user who placed it. Customers can read/write their own orders. Administrators can read all orders to manage them.",
+          "params": []
+        }
+      },
+      {
+        "path": "/orders/{orderId}/orderItems",
+        "definition": {
+          "entityName": "OrderItem",
+          "schema": {
+            "$ref": "#/backend/entities/OrderItem"
+          },
+          "description": "Subcollection storing the individual items for a specific order. Each document includes a denormalized 'customerId' field for authorization independence, inherited from its parent order, allowing atomic access checks.",
+          "params": [
+            {
+              "name": "orderId",
+              "description": "The unique identifier of the parent Order."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/roles_admin/{uid}",
+        "definition": {
+          "entityName": "AdminRole",
+          "schema": {
+            "$ref": "#/backend/entities/AdminRole"
+          },
+          "description": "Collection for assigning administrative roles. The existence of a document at this path for a given UID signifies that the user is an administrator (DBAC).",
+          "params": [
+            {
+              "name": "uid",
+              "description": "The Firebase User ID of the administrator."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The proposed Firestore structure prioritizes Authorization Independence, Structural Segregation, and Access Modeling as mandated. It ensures a scalable, secure, and debuggable database schema for Haya Tunis Pastries, particularly addressing the new admin page requirement.\n\n**Authorization Independence via Denormalization:**\nCrucially, to eliminate `get()` calls in security rules and support atomic operations, authorization context is denormalized. Each `Order` document will include a `customerId` field (matching `request.auth.uid` for authenticated users, or a unique anonymous ID for guests). Similarly, each `OrderItem` document within an order's subcollection will also include this `customerId`, copied directly from its parent `Order`. This allows security rules for both `Orders` and `OrderItems` to directly check `resource.data.customerId == request.auth.uid` for customer-specific access, avoiding expensive and dependency-creating `get()` operations on parent documents or user profiles.\n\n**Structural Segregation for Homogeneous Security Posture:**\n*   `/products`: This collection holds all product information. It has a homogeneous security posture: public read access for all users (for browsing the catalog) and restricted write access for administrators only. This clear separation simplifies rules significantly.\n*   `/orders`: This top-level collection holds all customer orders. Its security posture allows customers to create new orders and read their *own* orders (via the denormalized `customerId` field). Administrators have global read access to this collection, facilitating the 'validated orders' view for the admin page. The `status` field (`'validated'`, `'pending'`, etc.) allows for easy filtering without impacting security.\n*   `/orders/{orderId}/orderItems`: This subcollection stores the individual items associated with a specific order. Its security posture is inherently tied to its parent `Order` but is made authorization-independent through the denormalized `customerId` field in each `OrderItem` document. This allows for fine-grained, atomic access checks even at the item level if needed.\n*   `/roles_admin/{uid}`: This collection is dedicated to managing administrative roles. Its security posture is based on existence: if a document with a user's `uid` exists here, that user is an administrator. This is a clean, DBAC-compliant method for role management, separate from user profiles.\n\n**QAPs (Rules are not Filters) Support:**\n*   **`/products`:** Supports QAPs directly. Any user can `list` all documents in `/products` because the data is public. Security rules will simply allow `read` access for `list` operations.\n*   **`/orders`:** \n    *   For customers, `list` operations will explicitly require a `where('customerId', '==', request.auth.uid)` clause in their queries. The security rules will allow `list` only if this specific filter is present and matches the authenticated user's ID, thus remaining QAP-compliant by preventing arbitrary unfiltered `list` operations for non-admins.\n    *   For administrators (identified by `roles_admin/{uid}`), `list` operations on `/orders` are fully allowed, enabling the admin page to retrieve all orders (e.g., `db.collection('orders').where('status', '==', 'validated').get()`). This is QAP-compliant as admins have unrestricted list access to this data.\n*   **`/orders/{orderId}/orderItems`:** Similar to `/orders`, customers' `list` access will be implicitly filtered by their `customerId` on the parent order path, and explicitly secured by the denormalized `customerId` on the `OrderItem` itself. Admins will have full `list` access to `orderItems` under any order."
+  }
+}
