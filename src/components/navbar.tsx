@@ -2,7 +2,7 @@
 "use client";
 
 import Link from 'next/link';
-import { ShoppingBag, Menu, X, ShieldCheck } from 'lucide-react';
+import { ShoppingBag, Menu, X } from 'lucide-react';
 import { useCart } from './cart-context';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -35,12 +35,6 @@ export function Navbar() {
             </Link>
           ))}
           <div className="flex items-center gap-4">
-            <Link href="/admin">
-              <Button variant="outline" size="sm" className="hidden lg:flex items-center gap-2 border-primary/20 text-primary">
-                <ShieldCheck className="h-4 w-4" />
-                لوحة التحكم
-              </Button>
-            </Link>
             <Link href="/panier">
               <Button variant="ghost" className="relative flex items-center gap-2 px-3 hover:bg-accent/10">
                 <ShoppingBag className="h-5 w-5 text-primary" />
@@ -87,13 +81,6 @@ export function Navbar() {
               {link.name}
             </Link>
           ))}
-          <Link 
-            href="/admin"
-            onClick={() => setIsMenuOpen(false)}
-            className="text-lg font-medium p-2 text-primary flex items-center gap-2 justify-end"
-          >
-            لوحة التحكم <ShieldCheck className="h-5 w-5" />
-          </Link>
         </div>
       </div>
     </nav>
